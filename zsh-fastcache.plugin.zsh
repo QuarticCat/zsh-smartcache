@@ -31,14 +31,20 @@ _fcache-comp() {
     $@ > $cache &!
 }
 
+_fcache-clear() {
+    rm -i $ZSH_FASTCACHE_DIR/*
+}
+
 fcache() {
+    [[ -d $ZSH_FASTCACHE_DIR ]] || mkdir $ZSH_FASTCACHE_DIR
+
     local subcommand=$1; shift
 
     # TODO: subshell costs extra 1ms, so find a built-in method to substitute it.
     local cache=''
     if (( $+commands[md5] )) {
         cache=$ZSH_FASTCACHE_DIR/$(md5 <<< $@)
-    } else if (( $+commands[md5sum] )) {
+    } elif (( $+commands[md5sum] )) {
         cache=$(md5sum <<< $@)
         cache=$ZSH_FASTCACHE_DIR/${cache:0:32}
     } else {
