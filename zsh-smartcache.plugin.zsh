@@ -36,7 +36,7 @@ _smartcache-clear() {
 }
 
 smartcache() {
-    [[ -d $ZSH_SMARTCACHE_DIR ]] || mkdir $ZSH_SMARTCACHE_DIR
+    [[ -d $ZSH_SMARTCACHE_DIR ]] || mkdir -p $ZSH_SMARTCACHE_DIR
 
     local subcommand=$1; shift
 
