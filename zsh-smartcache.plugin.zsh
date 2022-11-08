@@ -1,4 +1,4 @@
-ZSH_SMARTCACHE_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/zsh-smartcache
+ZSH_SMARTCACHE_DIR=${ZSH_SMARTCACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh-smartcache}
 
 _smartcache-eval() {
     local cache=$1; shift
