@@ -1,17 +1,17 @@
 # zsh-smartcache
 
-Zsh plugin to cache command output to improve shell startup time
+A Zsh plugin to cache command output to boost shell startup.
 
 ## What it does
 
-It basically does the same thing as [evalcache](https://github.com/mroth/evalcache), except that
+It basically has the same functionality as [evalcache](https://github.com/mroth/evalcache), except that
 
 - It will automatically update the cache and inform you, while evalcache will never update the cache until you clear them. This operation is done in the background, so it has no effect on the satrtup time.
 - It also supports caching completions. (experimental)
 
 ## Benchmark
 
-Here are some informal benchmarks from my 3700X on my [.zshrc](https://github.com/QuarticCat/dotfiles/tree/main/zsh).
+Here are some benchmark results. (CPU: Ryzen 3700X)
 
 Benchmarked by `hyperfine 'zsh -ic exit'` and comparing the differences.
 
