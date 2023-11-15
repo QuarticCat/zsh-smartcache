@@ -21,14 +21,9 @@ _smartcache-eval() {
 # Ref: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/rust/rust.plugin.zsh
 _smartcache-comp() {
     local cache=$1; shift
-    if [[ ! -f $cache ]] {
-        local cmd=$1
-        autoload -Uz _$cmd
-        typeset -gA _comps
-        _comps[$cmd]=_$cmd
-    }
-    fpath+=($ZSH_SMARTCACHE_DIR)
-    $@ > $cache &!
+    filename=${cache:t}
+    modified_cache="${cache/$filename/_$filename}"
+    $@ > $modified_cache &!
 }
 
 _smartcache-clear() {
