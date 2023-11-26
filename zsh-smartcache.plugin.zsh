@@ -41,18 +41,15 @@ smartcache() {
 
     local subcommand=$1; shift
 
-    # TODO: subshell costs extra 1ms, so find a built-in method to substitute it.
-    local cache=''
-    if (( $+commands[md5] )) {
-        cache=$ZSH_SMARTCACHE_DIR/$(md5 <<< $@)
-    } elif (( $+commands[md5sum] )) {
-        cache=$(md5sum <<< $@)
-        cache=$ZSH_SMARTCACHE_DIR/${cache:0:32}
-    } else {
-        echo 'MD5 hash program not found!' >&2
-        return 1
-    }
+    # Custom hash function for longer hash-like strings
+    local args="$*"
+    local hash=$(echo "${args//[^[:alnum:]]/}" | tr -d '\n' | cksum | awk '{print $1}')
+    hash+=$(echo "$hash" | fold -w1 | sort | uniq -c | tr -d ' \n')
+    hash=${hash:0:32}  # Truncate to desired length
+
+    local cache=$ZSH_SMARTCACHE_DIR/$hash
 
     # TODO: do I need to check whether the command exist or not?
     _smartcache-$subcommand $cache $@
 }
+
