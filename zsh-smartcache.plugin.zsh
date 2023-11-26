@@ -1,22 +1,28 @@
+#!/bin/zsh
 ZSH_SMARTCACHE_DIR=${ZSH_SMARTCACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh-smartcache}
+
 
 _smartcache-eval() {
     local cache=$1; shift
-    if [[ ! -f $cache ]] {
-        local output=$($@)
-        eval $output
-        echo $output > $cache &!
-    } else {
-        source $cache
+    if [[ ! -f $cache ]]; then
+        local output=$("$@")
+        eval "$output"
+        printf '%s' "$output" >| "$cache" &!
+    else
+        source "$cache"
         (
-            local output=$($@)
-            if [[ $output != $(<$cache) ]] {
-                echo $output > $cache
+            local new_output=$("$@")
+            local cached_output=$(<"$cache")
+
+            if [[ $new_output != "$cached_output" ]]; then
+                # Update cache with new output
+                printf '%s' "$new_output" >| "$cache" &!
                 echo "Cache updated: '$@' (will be applied next time)"
-            }
+            fi
         ) &!
-    }
+    fi
 }
+
 
 # Ref: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/rust/rust.plugin.zsh
 _smartcache-comp() {
