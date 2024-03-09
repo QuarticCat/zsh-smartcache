@@ -5,16 +5,15 @@ _smartcache-eval() {
     if [[ ! -f $cache ]] {
         local output=$($@)
         eval $output
-        echo $output > $cache &!
+        printf '%s' $output >| $cache &!
     } else {
         source $cache
-        (
+        {
             local output=$($@)
-            if [[ $output != $(<$cache) ]] {
-                echo $output > $cache
-                echo "Cache updated: '$@' (will be applied next time)"
-            }
-        ) &!
+            [[ $output == $(<$cache) ]] && return
+            printf '%s' $output >| $cache
+            echo "Cache updated: '$@' (applied next time)"
+        } &!
     }
 }
 
@@ -40,15 +39,11 @@ smartcache() {
 
     local subcommand=$1; shift
 
-    # TODO: subshell costs extra 1ms, so find a built-in method to substitute it.
     local cache=''
-    if (( $+commands[md5] )) {
-        cache=$ZSH_SMARTCACHE_DIR/$(md5 <<< $@)
-    } elif (( $+commands[md5sum] )) {
-        cache=$(md5sum <<< $@)
-        cache=$ZSH_SMARTCACHE_DIR/${cache:0:32}
+    if (( $+commands[base64] )) {
+        cache=$ZSH_SMARTCACHE_DIR/${$(base64 <<< $@)%%=#}
     } else {
-        echo 'MD5 hash program not found!' >&2
+        echo 'base64 not found' >&2
         return 1
     }
 
