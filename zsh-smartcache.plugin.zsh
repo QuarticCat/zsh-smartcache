@@ -32,16 +32,12 @@ _smartcache-clear() {
 }
 
 smartcache() {
+    emulate -LR zsh -o extended_glob -o err_return
+
+    (( $+commands[base64] )) || base64 --help  # trigger error
     [[ -d $ZSH_SMARTCACHE_DIR ]] || mkdir -p $ZSH_SMARTCACHE_DIR
 
-    local subcommand=$1; shift
-
-    if (( $+commands[base64] )) {
-        local cache=${$(base64 <<< $@)%%=#}
-    } else {
-        echo 'base64 not found' >&2
-        return 1
-    }
-
-    _smartcache-$subcommand $cache $@
+    local subcmd=$1; shift
+    local id=${$(base64 <<< $@)%%=#}
+    _smartcache-$subcmd $id $@
 }
