@@ -1,7 +1,7 @@
 ZSH_SMARTCACHE_DIR=${ZSH_SMARTCACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh-smartcache}
 
 _smartcache-eval() {
-    local cache=$1; shift
+    local cache=$ZSH_SMARTCACHE_DIR/eval-$1; shift
     if [[ ! -f $cache ]] {
         local output=$($@)
         eval $output
@@ -17,17 +17,14 @@ _smartcache-eval() {
     }
 }
 
-# Ref: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/rust/rust.plugin.zsh
 _smartcache-comp() {
-    local cache=$1; shift
+    local cache=$ZSH_SMARTCACHE_DIR/_$1; shift
     if [[ ! -f $cache ]] {
-        local cmd=$1
-        autoload -Uz _$cmd
-        typeset -gA _comps
-        _comps[$cmd]=_$cmd
+        $@ >| $cache
+    } else {
+        $@ >| $cache &!
     }
     fpath+=($ZSH_SMARTCACHE_DIR)
-    $@ > $cache &!
 }
 
 _smartcache-clear() {
@@ -39,14 +36,12 @@ smartcache() {
 
     local subcommand=$1; shift
 
-    local cache=''
     if (( $+commands[base64] )) {
-        cache=$ZSH_SMARTCACHE_DIR/${$(base64 <<< $@)%%=#}
+        local cache=${$(base64 <<< $@)%%=#}
     } else {
         echo 'base64 not found' >&2
         return 1
     }
 
-    # TODO: do I need to check whether the command exist or not?
     _smartcache-$subcommand $cache $@
 }
