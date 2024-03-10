@@ -27,10 +27,6 @@ _smartcache-comp() {
     fpath+=($ZSH_SMARTCACHE_DIR)
 }
 
-_smartcache-clear() {
-    rm -i $ZSH_SMARTCACHE_DIR/*
-}
-
 smartcache() {
     emulate -LR zsh -o extended_glob -o err_return
 
