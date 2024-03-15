@@ -5,13 +5,13 @@ _smartcache-eval() {
     if [[ ! -f $cache ]] {
         local output=$($@)
         eval $output
-        print -n $output >| $cache &!
+        printf '%s' $output >| $cache &!
     } else {
         source $cache
         {
             local output=$($@)
             [[ $output == $(<$cache) ]] && return
-            print -n $output >| $cache
+            printf '%s' $output >| $cache
             print "Cache updated: '$@' (applied next time)"
         } &!
     }
