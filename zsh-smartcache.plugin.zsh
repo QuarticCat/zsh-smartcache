@@ -3,14 +3,14 @@ ZSH_SMARTCACHE_DIR=${ZSH_SMARTCACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh-sma
 _smartcache-eval() {
     local cache=$ZSH_SMARTCACHE_DIR/eval-$1; shift
     if [[ ! -f $cache ]] {
-        local output=$($@)
+        local output=$("$@")
         eval $output
         printf '%s' $output >| $cache &!
     } else {
         source $cache
         {
-            local output=$($@)
-            [[ $output == $(<$cache) ]] && return
+            local output=$("$@")
+            [[ $output == "$(<$cache)" ]] && return
             printf '%s' $output >| $cache
             print "Cache updated: '$@' (applied next time)"
         } &!
@@ -20,9 +20,9 @@ _smartcache-eval() {
 _smartcache-comp() {
     local cache=$ZSH_SMARTCACHE_DIR/_$1; shift
     if [[ ! -f $cache ]] {
-        $@ >| $cache
+        "$@" >| $cache
     } else {
-        $@ >| $cache &!
+        "$@" >| $cache &!
     }
     fpath+=($ZSH_SMARTCACHE_DIR)
 }
@@ -34,6 +34,6 @@ smartcache() {
     [[ -d $ZSH_SMARTCACHE_DIR ]] || mkdir -p $ZSH_SMARTCACHE_DIR
 
     local subcmd=$1; shift
-    local id=${$(base64 <<< $@)%%=#}
-    _smartcache-$subcmd $id $@
+    local id=${$(base64 <<< "$@")%%=#}
+    _smartcache-$subcmd $id "$@"
 }
