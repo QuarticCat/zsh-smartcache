@@ -3,13 +3,13 @@ ZSH_SMARTCACHE_DIR=${ZSH_SMARTCACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh-sma
 _smartcache-eval() {
     local cache=$ZSH_SMARTCACHE_DIR/eval-$1; shift
     if [[ ! -f $cache ]] {
-        local output=$("$@")
+        local output="$($@)"
         eval $output
         printf '%s' $output >| $cache &!
     } else {
         source $cache
         {
-            local output=$("$@")
+            local output="$($@)"
             [[ $output == "$(<$cache)" ]] && return
             printf '%s' $output >| $cache
             print "Cache updated: '$@' (applied next time)"
