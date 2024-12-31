@@ -22,7 +22,12 @@ _smartcache-comp() {
     if [[ ! -f $cache ]] {
         "$@" >| $cache
     } else {
-        "$@" >| $cache &!
+        {
+            local output="$($@)"
+            [[ $output == "$(<$cache)" ]] && return
+            printf '%s' $output >| $cache
+            print "Cache updated: '$@' (applied next time)"
+        } &!
     }
     fpath+=($ZSH_SMARTCACHE_DIR)
 }
