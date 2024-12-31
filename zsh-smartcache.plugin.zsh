@@ -1,4 +1,7 @@
+(( $+commands[base64] )) || base64 --help  # trigger error
 ZSH_SMARTCACHE_DIR=${ZSH_SMARTCACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh-smartcache}
+[[ -d $ZSH_SMARTCACHE_DIR ]] || mkdir -p $ZSH_SMARTCACHE_DIR
+fpath+=($ZSH_SMARTCACHE_DIR)
 
 _smartcache-eval() {
     local cache=$ZSH_SMARTCACHE_DIR/eval-$1; shift
@@ -29,14 +32,10 @@ _smartcache-comp() {
             print "Cache updated: '$@' (applied next time)"
         } &!
     }
-    fpath+=($ZSH_SMARTCACHE_DIR)
 }
 
 smartcache() {
     emulate -LR zsh -o extended_glob -o err_return
-
-    (( $+commands[base64] )) || base64 --help  # trigger error
-    [[ -d $ZSH_SMARTCACHE_DIR ]] || mkdir -p $ZSH_SMARTCACHE_DIR
 
     local subcmd=$1; shift
     local id=${$(base64 <<< "$@")%%=#}
