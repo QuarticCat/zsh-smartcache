@@ -6,13 +6,13 @@ fpath+=($ZSH_SMARTCACHE_DIR)
 _smartcache-eval() {
     local cache=$ZSH_SMARTCACHE_DIR/eval-$1; shift
     if [[ ! -f $cache ]] {
-        local output="$($@)"
+        local output=$("$@")
         eval $output
         printf '%s' $output >| $cache &!
     } else {
         source $cache
         {
-            local output="$($@)"
+            local output=$("$@")
             [[ $output == "$(<$cache)" ]] && return
             printf '%s' $output >| $cache
             print "Cache updated: '$@' (applied next time)"
@@ -26,7 +26,7 @@ _smartcache-comp() {
         "$@" >| $cache
     } else {
         {
-            local output="$($@)"
+            local output=$("$@")
             [[ $output == "$(<$cache)" ]] && return
             printf '%s' $output >| $cache
             print "Cache updated: '$@' (applied next time)"
