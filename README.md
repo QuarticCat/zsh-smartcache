@@ -23,7 +23,7 @@ Benchmarked by `hyperfine 'zsh -ic exit'` and comparing the differences.
 
 Some changes from evalcache's results:
 
-- Only the subsequent runs are recorded. The first run has a fixed extra cost (~1ms) on the MD5 hash computation.
+- Only the subsequent runs are recorded. The first run has a fixed extra cost (~1ms).
 - Speedup of `rbenv init` is much lower, since the command output now includes `rbenv` calls, which are super slow.
 - `hub alias` and `scmpuff init` are superfast now.
 
