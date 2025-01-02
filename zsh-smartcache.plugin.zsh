@@ -28,9 +28,9 @@ _smartcache-comp() {
             printf '%s' $output >| $cache
             print "Cache updated: '$@' (applied next time)"
         } &!
-        # fpath is set unique by default so it's OK to append multiple times.
-        fpath+=($ZSH_SMARTCACHE_DIR)
     }
+    # fpath is set unique by default so it's OK to append multiple times.
+    fpath+=($ZSH_SMARTCACHE_DIR)
 }
 
 smartcache() {
