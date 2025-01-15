@@ -8,7 +8,7 @@ _smartcache-eval() {
         {
             printf '%s' $output >| $cache
             zcompile $cache
-        }&!
+        } &!
     } else {
         source $cache
         {
