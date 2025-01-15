@@ -5,13 +5,17 @@ _smartcache-eval() {
     if [[ ! -f $cache ]] {
         local output=$("$@")
         eval $output
-        printf '%s' $output >| $cache &!
+        {
+            printf '%s' $output >| $cache
+            zcompile $cache
+        }&!
     } else {
         source $cache
         {
             local output=$("$@")
             [[ $output == "$(<$cache)" ]] && return
             printf '%s' $output >| $cache
+            zcompile $cache
             print "Cache updated: '$@' (applied next time)"
         } &!
     }
