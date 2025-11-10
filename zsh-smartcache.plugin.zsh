@@ -39,7 +39,7 @@ _smartcache-comp() {
 }
 
 smartcache() {
-    emulate -LR zsh -o extended_glob -o err_return
+    setopt local_options extended_glob err_return
 
     # Doing these lately as users might change settings after plugin loading.
     (( $+commands[base64] )) || base64 --help  # trigger error
