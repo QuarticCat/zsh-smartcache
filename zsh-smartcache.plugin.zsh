@@ -1,4 +1,6 @@
 ZSH_SMARTCACHE_DIR=${ZSH_SMARTCACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh-smartcache}
+# Preload fpath so that commits can be triggered through the zsh framework
+fpath+=($ZSH_SMARTCACHE_DIR)
 
 _smartcache-eval() {
     local cache=$ZSH_SMARTCACHE_DIR/eval-$1; shift
@@ -33,8 +35,6 @@ _smartcache-comp() {
             print "smartcache: '$@' updated (takes effect next launch)"
         } &!
     }
-    # fpath is set unique by default so it's OK to append multiple times.
-    fpath+=($ZSH_SMARTCACHE_DIR)
 }
 
 smartcache() {
